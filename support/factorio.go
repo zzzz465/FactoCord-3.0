@@ -136,6 +136,30 @@ func (f *factorioState) Stop(s *discordgo.Session) {
 	f.SaveRequested = false
 }
 
+func (f *factorioState) Pause(s *discordgo.Session) {
+	if !f.running {
+		SendOptional(s, "The server is not running")
+		return
+	}
+	if !f.Send("/pause") {
+		SendOptional(s, "Failed to send pause command to the server")
+		return
+	}
+	SendOptional(s, "Factorio server has been **paused**")
+}
+
+func (f *factorioState) Resume(s *discordgo.Session) {
+	if !f.running {
+		SendOptional(s, "The server is not running")
+		return
+	}
+	if !f.Send("/unpause") {
+		SendOptional(s, "Failed to send resume command to the server")
+		return
+	}
+	SendOptional(s, "Factorio server has been **resumed**")
+}
+
 func FactorioVersion() (string, error) {
 	cmd := exec.Command(Config.Executable, "--version")
 	out, err := cmd.CombinedOutput()
